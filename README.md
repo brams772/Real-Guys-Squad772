@@ -1,2 +1,869 @@
-# Real-Guys-Squad772
-Site Officials 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Real Guy Squad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #080808;
+      --deep: #0d0d0d;
+      --card: #111111;
+      --gold: #c8a84b;
+      --gold2: #f0c060;
+      --red: #c0392b;
+      --white: #f0ece0;
+      --muted: #888;
+      --border: #1e1e1e;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 3rem;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 6rem 2rem 4rem;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(200,168,75,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(192,57,43,0.05) 0%, transparent 60%),
+        var(--black);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,168,75,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,168,75,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black, transparent);
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 15vw, 13rem);
+      line-height: 0.9;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      position: relative;
+      z-index: 1;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-title span {
+      display: block;
+      color: var(--gold);
+      -webkit-text-stroke: 2px var(--gold);
+      color: transparent;
+    }
+
+    .hero-sub {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 300;
+      font-size: 1.1rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+
+    .hero-cta {
+      margin-top: 3.5rem;
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 1s forwards;
+    }
+
+    .btn {
+      padding: 0.85rem 2.2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .btn-primary:hover {
+      background: var(--gold2);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(200,168,75,0.35);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1px solid rgba(240,236,224,0.25);
+      clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.4s forwards;
+    }
+
+    .scroll-indicator span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* SECTION COMMONS */
+    section {
+      padding: 7rem 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      max-width: 80px;
+    }
+
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 5rem);
+      line-height: 1;
+      letter-spacing: 0.05em;
+      margin-bottom: 3rem;
+    }
+
+    /* MEMBERS */
+    #members { padding-top: 5rem; }
+
+    .members-intro {
+      max-width: 600px;
+      font-size: 1.1rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.8;
+      margin-bottom: 4rem;
+    }
+
+    .members-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .member-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s;
+      clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+    }
+
+    .member-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--gold), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .member-card:hover::before { transform: scaleX(1); }
+
+    .member-card:hover {
+      border-color: rgba(200,168,75,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .member-card.rapper { border-color: rgba(192,57,43,0.3); }
+    .member-card.rapper::before {
+      background: linear-gradient(to right, var(--red), transparent);
+    }
+
+    .member-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      color: rgba(200,168,75,0.08);
+      position: absolute;
+      top: 1rem; right: 1rem;
+    }
+
+    .rapper .member-number { color: rgba(192,57,43,0.1); }
+
+    .member-role-badge {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.7rem;
+      margin-bottom: 1rem;
+      background: rgba(200,168,75,0.1);
+      color: var(--gold);
+      border: 1px solid rgba(200,168,75,0.2);
+    }
+
+    .rapper .member-role-badge {
+      background: rgba(192,57,43,0.12);
+      color: #e74c3c;
+      border-color: rgba(192,57,43,0.3);
+    }
+
+    .member-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .member-desc {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* MUSIC */
+    #music {
+      background: linear-gradient(to bottom, transparent, rgba(200,168,75,0.03), transparent);
+      max-width: none;
+      padding: 7rem 3rem;
+    }
+
+    #music > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+    #music .section-label, #music .section-title { max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+    .tracks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .track-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s;
+    }
+
+    .track-card:hover {
+      border-color: rgba(200,168,75,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(200,168,75,0.1);
+    }
+
+    .track-artwork {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--deep);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .track-artwork-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .track-artwork-bg.t1 {
+      background: radial-gradient(ellipse at 30% 70%, rgba(192,57,43,0.3), transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(200,168,75,0.2), transparent 50%),
+                  var(--deep);
+    }
+    .track-artwork-bg.t2 {
+      background: radial-gradient(ellipse at 70% 30%, rgba(200,168,75,0.25), transparent 55%),
+                  radial-gradient(ellipse at 20% 80%, rgba(50,50,100,0.3), transparent 50%),
+                  var(--deep);
+    }
+    .track-artwork-bg.t3 {
+      background: radial-gradient(ellipse at 50% 50%, rgba(192,57,43,0.2), transparent 60%),
+                  radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.15), transparent 40%),
+                  var(--deep);
+    }
+
+    .track-artwork-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      letter-spacing: 0.1em;
+      color: rgba(240,236,224,0.06);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      line-height: 1;
+    }
+
+    .track-play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      background: rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .track-card:hover .track-play-btn { opacity: 1; }
+
+    .play-circle {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0.8);
+      transition: transform 0.3s;
+    }
+
+    .track-card:hover .play-circle { transform: scale(1); }
+
+    .play-icon {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 9px 0 9px 16px;
+      border-color: transparent transparent transparent var(--black);
+      margin-left: 3px;
+    }
+
+    .track-info {
+      padding: 1.5rem;
+    }
+
+    .track-platform {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.25em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .track-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.3rem;
+    }
+
+    .track-artist {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .track-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      transition: gap 0.3s;
+    }
+
+    .track-link:hover { gap: 0.8rem; }
+    .track-link svg { transition: transform 0.3s; }
+    .track-link:hover svg { transform: translateX(3px); }
+
+    /* ABOUT */
+    #about {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .about-visual {
+      position: relative;
+    }
+
+    .about-big-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(6rem, 12vw, 10rem);
+      line-height: 0.85;
+      letter-spacing: 0.04em;
+      -webkit-text-stroke: 1px rgba(200,168,75,0.2);
+      color: transparent;
+      user-select: none;
+    }
+
+    .about-accent-line {
+      width: 80px;
+      height: 3px;
+      background: var(--gold);
+      margin: 2rem 0;
+      position: relative;
+    }
+
+    .about-accent-line::after {
+      content: '';
+      position: absolute;
+      left: 90px;
+      top: 0;
+      width: 30px;
+      height: 3px;
+      background: var(--red);
+    }
+
+    .about-text {
+      font-size: 1.05rem;
+      font-weight: 300;
+      line-height: 1.9;
+      color: rgba(240,236,224,0.75);
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .stat-item {
+      border-left: 2px solid var(--gold);
+      padding-left: 1rem;
+    }
+
+    .stat-number {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+    }
+
+    .footer-copy {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .social-link {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .social-link:hover { color: var(--gold); }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0 3rem;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50% { opacity: 1; transform: scaleY(1.3); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      section { padding: 5rem 1.5rem; }
+      #about { grid-template-columns: 1fr; gap: 3rem; }
+      .about-big-text { font-size: 5rem; }
+      footer { padding: 2rem 1.5rem; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">RGS</a>
+    <ul class="nav-links">
+      <li><a href="#members">Membres</a></li>
+      <li><a href="#music">Musique</a></li>
+      <li><a href="#about">À propos</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <p class="hero-tag">— Straight from the block —</p>
+    <h1 class="hero-title">
+      Real Guy
+      <span>Squad</span>
+    </h1>
+    <p class="hero-sub">Rap · Musique · Culture · Street</p>
+    <div class="hero-cta">
+      <a href="#music" class="btn btn-primary">Écouter maintenant</a>
+      <a href="#members" class="btn btn-outline">Le Groupe</a>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroller</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+
+  <!-- MEMBERS -->
+  <section id="members">
+    <p class="section-label">Le Groupe</p>
+    <h2 class="section-title">Les Membres</h2>
+    <p class="members-intro">Cinq artistes, une vision. Real Guy Squad réunit deux rappeurs d'exception et trois producteurs/beatmakers pour une sonorité unique, entre trap, drill et afro-urbain.</p>
+    <div class="members-grid">
+
+      <div class="member-card rapper">
+        <div class="member-number">01</div>
+        <span class="member-role-badge">Rappeur</span>
+        <h3 class="member-name">Boubdi</h3>
+        <p class="member-desc">Plumes acérées, flow imprévisible. Boubdi pose des punchlines qui marquent et une présence scénique redoutable.</p>
+      </div>
+
+      <div class="member-card rapper">
+        <div class="member-number">02</div>
+        <span class="member-role-badge">Rappeur</span>
+        <h3 class="member-name">Yazby</h3>
+        <p class="member-desc">Lyriciste instinctif, Yazby mêle street poetry et mélodies trap pour des refrains qui restent gravés.</p>
+      </div>
+
+      <div class="member-card">
+        <div class="member-number">03</div>
+        <span class="member-role-badge">Membre</span>
+        <h3 class="member-name">Brvms</h3>
+        <p class="member-desc">Beatmaker et compositeur, Brvms façonne les ambiances sombres et cinématiques du groupe.</p>
+      </div>
+
+      <div class="member-card">
+        <div class="member-number">04</div>
+        <span class="member-role-badge">Membre</span>
+        <h3 class="member-name">Eldji</h3>
+        <p class="member-desc">Producteur créatif, Eldji apporte la chaleur et les textures mélodiques qui définissent le son RGS.</p>
+      </div>
+
+      <div class="member-card">
+        <div class="member-number">05</div>
+        <span class="member-role-badge">Membre</span>
+        <h3 class="member-name">Mrt Ouste</h3>
+        <p class="member-desc">Visionnaire musical, Mrt Ouste connecte les influences et donne au groupe sa cohésion artistique.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- MUSIC -->
+  <div id="music" style="padding: 7rem 0;">
+    <div style="max-width:1200px; margin:0 auto; padding: 0 3rem;">
+      <p class="section-label">Discographie</p>
+      <h2 class="section-title">Notre Musique</h2>
+    </div>
+    <div class="tracks-grid" style="max-width:1200px; margin:0 auto; padding: 0 3rem;">
+
+      <!-- Track 1 -->
+      <div class="track-card">
+        <div class="track-artwork">
+          <div class="track-artwork-bg t1"></div>
+          <div class="track-artwork-text">THE<br>NIGH</div>
+          <div class="track-play-btn">
+            <div class="play-circle"><div class="play-icon"></div></div>
+          </div>
+        </div>
+        <div class="track-info">
+          <p class="track-platform">Audiomack</p>
+          <h3 class="track-title">The Nigh</h3>
+          <p class="track-artist">Real Guy Squad · Boubdi · Yazby</p>
+          <a href="https://audiomack.com/search/songs?q=The+Nigh+Real+Guy+Squad" target="_blank" class="track-link">
+            Écouter sur Audiomack
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 2 -->
+      <div class="track-card">
+        <div class="track-artwork">
+          <div class="track-artwork-bg t2"></div>
+          <div class="track-artwork-text">FETI<br>FETI</div>
+          <div class="track-play-btn">
+            <div class="play-circle"><div class="play-icon"></div></div>
+          </div>
+        </div>
+        <div class="track-info">
+          <p class="track-platform">Audiomack</p>
+          <h3 class="track-title">Feti Feti</h3>
+          <p class="track-artist">Real Guy Squad · Boubdi · Yazby</p>
+          <a href="https://audiomack.com/search/songs?q=Feti+Feti+Real+Guy+Squad" target="_blank" class="track-link">
+            Écouter sur Audiomack
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Track 3 -->
+      <div class="track-card">
+        <div class="track-artwork">
+          <div class="track-artwork-bg t3"></div>
+          <div class="track-artwork-text">GANG</div>
+          <div class="track-play-btn">
+            <div class="play-circle"><div class="play-icon"></div></div>
+          </div>
+        </div>
+        <div class="track-info">
+          <p class="track-platform">Audiomack</p>
+          <h3 class="track-title">Gang</h3>
+          <p class="track-artist">Real Guy Squad · Boubdi · Yazby</p>
+          <a href="https://audiomack.com/search/songs?q=Gang+Real+Guy+Squad" target="_blank" class="track-link">
+            Écouter sur Audiomack
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M1 6h10M6 1l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-visual">
+      <div class="about-big-text">REAL<br>GUY<br>SQUAD</div>
+    </div>
+    <div class="about-content">
+      <p class="section-label">Le Mouvement</p>
+      <h2 class="section-title">À Propos</h2>
+      <div class="about-accent-line"></div>
+      <p class="about-text">
+        Real Guy Squad est bien plus qu'un groupe de rap — c'est une famille, un mouvement. Né dans la rue, élevé par la musique, RGS incarne l'authenticité à travers chaque son, chaque punchline et chaque performance. Cinq esprits, une seule direction.
+      </p>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-number">5</div>
+          <div class="stat-label">Membres</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">3+</div>
+          <div class="stat-label">Titres</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Vision</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">RGS</div>
+    <div class="footer-copy">
+      © 2026 Real Guy Squad. Tous droits réservés.
+    </div>
+    <div class="footer-social">
+      <a href="https://audiomack.com" target="_blank" class="social-link">Audiomack</a>
+    </div>
+  </footer>
+
+</body>
+</html>
+
